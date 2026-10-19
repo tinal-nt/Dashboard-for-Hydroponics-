@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydroponics OS - Smart Farming IoT</title>
+
+  <!-- External Libraries -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Google Fonts: Kantumruy Pro for clean Khmer typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="hub-header">
+      <div>
+        <h1 id="txt-title">Hydroponics OS</h1>
+        <p class="subtitle" id="txt-subtitle">Precision Nutrient Management & Root Zone Telemetry</p>
+      </div>
+      <div class="header-badges">
+        <!-- Language Switcher Button -->
+        <button id="langBtn" class="badge-btn lang-btn" onclick="toggleLanguage()">🇰🇭 ភាសាខ្មែរ</button>
+        <button id="simBtn" class="badge-btn" onclick="toggleSimulator()"><span id="txt-sim">Simulation: OFF</span></button>
+        <span class="badge-status"><span class="pulse-dot"></span><span id="txt-mqtt-status">MQTT Live</span></span>
+      </div>
+    </header>
+
+    <!-- Top Grid: Water Chemistry & Environment -->
+    <section class="sensor-grid">
+      <!-- EC / Nutrients -->
+      <div class="card metric-card">
+        <span class="card-title" id="txt-card-ec">EC (Nutrients)</span>
+        <div class="metric-val color-ec" id="val-ec">-- mS/cm</div>
+        <div class="metric-sub" id="val-tds"><span id="txt-sub-tds">TDS</span>: -- PPM</div>
+      </div>
+
+      <!-- Water pH -->
+      <div class="card metric-card">
+        <span class="card-title" id="txt-card-ph">Solution pH</span>
+        <div class="metric-val color-ph" id="val-ph">-- pH</div>
+        <div class="metric-sub" id="txt-sub-ph">Optimal: 5.5 - 6.5</div>
+      </div>
+
+      <!-- Water Temperature -->
+      <div class="card metric-card">
+        <span class="card-title" id="txt-card-wtemp">Water Temp (Root)</span>
+        <div class="metric-val color-wtemp" id="val-wtemp">-- °C</div>
+        <div class="metric-sub" id="txt-sub-wtemp">Target: 18 - 22 °C</div>
+      </div>
+
+      <!-- Reservoir Level -->
+      <div class="card metric-card">
+        <span class="card-title" id="txt-card-water">Reservoir Level</span>
+        <div class="metric-val color-water" id="val-water">-- %</div>
+        <div class="metric-sub" id="txt-sub-water">Supply Tank Depth</div>
+      </div>
+
+      <!-- Air Climate -->
+      <div class="card metric-card">
+        <span class="card-title" id="txt-card-atemp">Canopy Temp</span>
+        <div class="metric-val color-temp" id="val-atemp">-- °C</div>
+        <div class="metric-sub"><span id="txt-sub-humidity">Humidity</span>: <span id="val-humidity-num">--</span> %</div>
+      </div>
+
+      <!-- Light / Photoperiod -->
+      <div class="card metric-card">
+        <span class="card-title" id="txt-card-light">Solar / Light</span>
+        <div class="metric-val color-light" id="val-light">-- Lux</div>
+        <div class="metric-sub" id="txt-sub-light">PPFD Indicator</div>
+      </div>
+    </section>
+
+    <!-- Main Section: Chart & Hydroponic Controls -->
+    <div class="main-grid">
+      <!-- Water Chemistry Chart -->
+      <div class="card chart-box">
+        <div class="card-title" id="txt-chart-title" style="margin-bottom: 12px;">Nutrient (EC) & Acidity (pH) Stability</div>
+        <div class="canvas-wrapper">
+          <canvas id="hydroChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Actuation & Dosing Controls -->
+      <div class="card control-box">
+        <div class="card-title" id="txt-actuators-title" style="margin-bottom: 16px;">Hydroponic Actuators & Dosing</div>
+
+        <!-- Mode Toggle -->
+        <div class="control-group">
+          <div class="control-row-header">
+            <span id="txt-mode-header">Dosing & Cycle Mode</span>
+            <span id="mode-badge" class="mode-indicator">AUTO</span>
+          </div>
+          <div class="btn-pair">
+            <button class="btn-mode active" id="btn-mode-auto" onclick="setMode('AUTO')">Closed Loop</button>
+            <button class="btn-mode" id="btn-mode-manual" onclick="setMode('MANUAL')">Manual Override</button>
+          </div>
+        </div>
+
+        <hr class="card-divider">
+
+        <!-- Main Circulation Pump -->
+        <div class="control-group">
+          <div class="control-row-header">
+            <span id="txt-pump-header">Circulation / NFT Pump</span>
+            <span id="pump-status" class="status-pill status-off">OFF</span>
+          </div>
+          <div class="btn-pair">
+            <button class="btn-action btn-on" id="btn-pump-on" onclick="sendActuatorCommand('pump', 'ON')">START PUMP</button>
+            <button class="btn-action btn-off" id="btn-pump-off" onclick="sendActuatorCommand('pump', 'OFF')">STOP PUMP</button>
+          </div>
+        </div>
+
+        <!-- Grow Lights -->
+        <div class="control-group">
+          <div class="control-row-header">
+            <span id="txt-light-header">Grow Lights Relay</span>
+            <span id="light-status" class="status-pill status-off">OFF</span>
+          </div>
+          <div class="btn-pair">
+            <button class="btn-action btn-on" id="btn-light-on" onclick="sendActuatorCommand('light', 'ON')">LIGHTS ON</button>
+            <button class="btn-action btn-off" id="btn-light-off" onclick="sendActuatorCommand('light', 'OFF')">LIGHTS OFF</button>
+          </div>
+        </div>
+
+        <!-- Peristaltic Dosing Pulses -->
+        <div class="control-group">
+          <div class="control-row-header">
+            <span id="txt-dose-header">Peristaltic Dosing (5ml Pulse)</span>
+          </div>
+          <div class="btn-pair">
+            <button class="btn-dose btn-dose-ph" id="btn-dose-ph" onclick="triggerDose('ph_down')">Dose pH Down</button>
+            <button class="btn-dose btn-dose-ec" id="btn-dose-ec" onclick="triggerDose('nutrient')">Dose Nutrient</button>
+          </div>
+        </div>
+
+        <!-- Edge Event Log -->
+        <div class="card-title" id="txt-log-title" style="margin: 16px 0 8px 0;">Hydroponic Edge Event Log</div>
+        <div class="terminal" id="term-logs">Ready. Connecting to edge telemetry...\n</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+:root {
+  --bg: #070e17;
+  --card-bg: #101c2a;
+  --card-border: #1a2f45;
+  --text-main: #f8fafc;
+  --text-muted: #8ca3ba;
+  
+  /* Hydroponics Color Palette */
+  --c-ec: #38bdf8;
+  --c-ph: #c084fc;
+  --c-wtemp: #06b6d4;
+  --c-water: #0284c7;
+  --c-temp: #f59e0b;
+  --c-light: #fbbf24;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* Kantumruy Pro fallback seamlessly blends English and Khmer glyphs */
+  font-family: "Kantumruy Pro", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Header */
+.hub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 16px;
+}
+
+.hub-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.header-badges {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.badge-btn {
+  background: rgba(139, 92, 246, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.badge-btn:hover {
+  background: rgba(139, 92, 246, 0.3);
+}
+
+.badge-btn.active {
+  background: #8b5cf6;
+  color: #fff;
+}
+
+/* Dedicated Language Switcher Style */
+.lang-btn {
+  background: rgba(6, 182, 212, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+.lang-btn:hover {
+  background: rgba(6, 182, 212, 0.3);
+}
+
+.badge-status {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #34d399;
+}
+
+/* Cards & Grid */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.card-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+}
+
+.metric-card {
+  text-align: left;
+}
+
+.metric-val {
+  font-size: 1.85rem;
+  font-weight: 700;
+  margin: 6px 0;
+}
+
+.metric-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.color-ec    { color: var(--c-ec); }
+.color-ph    { color: var(--c-ph); }
+.color-wtemp { color: var(--c-wtemp); }
+.color-water { color: var(--c-water); }
+.color-temp  { color: var(--c-temp); }
+.color-light { color: var(--c-light); }
+
+/* Main Section */
+.main-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.canvas-wrapper {
+  position: relative;
+  height: 320px;
+  width: 100%;
+}
+
+/* Control & Actuators */
+.control-group {
+  margin-bottom: 14px;
+}
+
+.control-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.mode-indicator {
+  font-weight: bold;
+  color: #38bdf8;
+}
+
+.status-pill {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.status-on { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+.status-off { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+.btn-pair {
+  display: flex;
+  gap: 10px;
+}
+
+button.btn-mode, button.btn-action, button.btn-dose {
+  flex: 1;
+  padding: 9px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: #0b1521;
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.85rem;
+}
+
+button.btn-mode.active {
+  background: #0284c7;
+  color: white;
+  border-color: #38bdf8;
+}
+
+.btn-action.btn-on { background: #10b981; color: white; border: none; }
+.btn-action.btn-on:hover { background: #059669; }
+.btn-action.btn-off { background: #ef4444; color: white; border: none; }
+.btn-action.btn-off:hover { background: #dc2626; }
+
+.btn-dose-ph {
+  border-color: #c084fc;
+  color: #c084fc;
+}
+.btn-dose-ph:hover {
+  background: rgba(192, 132, 252, 0.15);
+}
+
+.btn-dose-ec {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+.btn-dose-ec:hover {
+  background: rgba(56, 189, 248, 0.15);
+}
+
+.card-divider {
+  border: none;
+  height: 1px;
+  background-color: var(--card-border);
+  margin: 14px 0;
+}
+
+.terminal {
+  background: #060b12;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #7dd3fc;
+  height: 120px;
+  overflow-y: auto;
+}
