@@ -18,8 +18,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  /* Kantumruy Pro fallback seamlessly blends English and Khmer glyphs */
   font-family: "Kantumruy Pro", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -37,13 +37,16 @@ body {
   gap: 20px;
 }
 
-/* Header */
+/* ==========================================
+   HEADER
+   ========================================== */
 .hub-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--card-border);
   padding-bottom: 16px;
+  gap: 16px;
 }
 
 .hub-header h1 {
@@ -61,13 +64,14 @@ body {
   display: flex;
   gap: 10px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .badge-btn {
   background: rgba(139, 92, 246, 0.15);
   color: #a78bfa;
   border: 1px solid rgba(139, 92, 246, 0.3);
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: 9999px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -84,21 +88,17 @@ body {
   color: #fff;
 }
 
-/* Dedicated Language Switcher Style */
 .lang-btn {
   background: rgba(6, 182, 212, 0.15);
   color: #38bdf8;
   border: 1px solid rgba(56, 189, 248, 0.3);
-}
-.lang-btn:hover {
-  background: rgba(6, 182, 212, 0.3);
 }
 
 .badge-status {
   background: rgba(16, 185, 129, 0.15);
   color: #34d399;
   border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 6px 14px;
+  padding: 8px 14px;
   border-radius: 9999px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -114,7 +114,9 @@ body {
   background-color: #34d399;
 }
 
-/* Cards & Grid */
+/* ==========================================
+   CARDS & SENSOR GRID (DESKTOP DEFAULT)
+   ========================================== */
 .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
@@ -159,17 +161,13 @@ body {
 .color-temp  { color: var(--c-temp); }
 .color-light { color: var(--c-light); }
 
-/* Main Section */
+/* ==========================================
+   MAIN GRID: CHART & ACTUATOR PANEL
+   ========================================== */
 .main-grid {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 20px;
-}
-
-@media (max-width: 900px) {
-  .main-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .canvas-wrapper {
@@ -178,7 +176,6 @@ body {
   width: 100%;
 }
 
-/* Control & Actuators */
 .control-group {
   margin-bottom: 14px;
 }
@@ -198,7 +195,7 @@ body {
 }
 
 .status-pill {
-  padding: 2px 10px;
+  padding: 3px 10px;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 700;
@@ -214,7 +211,7 @@ body {
 
 button.btn-mode, button.btn-action, button.btn-dose {
   flex: 1;
-  padding: 9px;
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid var(--card-border);
   background: #0b1521;
@@ -236,21 +233,11 @@ button.btn-mode.active {
 .btn-action.btn-off { background: #ef4444; color: white; border: none; }
 .btn-action.btn-off:hover { background: #dc2626; }
 
-.btn-dose-ph {
-  border-color: #c084fc;
-  color: #c084fc;
-}
-.btn-dose-ph:hover {
-  background: rgba(192, 132, 252, 0.15);
-}
+.btn-dose-ph { border-color: #c084fc; color: #c084fc; }
+.btn-dose-ph:hover { background: rgba(192, 132, 252, 0.15); }
 
-.btn-dose-ec {
-  border-color: #38bdf8;
-  color: #38bdf8;
-}
-.btn-dose-ec:hover {
-  background: rgba(56, 189, 248, 0.15);
-}
+.btn-dose-ec { border-color: #38bdf8; color: #38bdf8; }
+.btn-dose-ec:hover { background: rgba(56, 189, 248, 0.15); }
 
 .card-divider {
   border: none;
@@ -269,4 +256,62 @@ button.btn-mode.active {
   color: #7dd3fc;
   height: 120px;
   overflow-y: auto;
+}
+
+/* ==========================================
+   PHONE MODE (RESPONSIVE SCREEN OVERRIDES)
+   ========================================== */
+@media (max-width: 768px) {
+  body {
+    padding: 12px;
+  }
+
+  /* Stack header items neatly */
+  .hub-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-badges {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* Two cards per row on mobile for high density without squishing */
+  .sensor-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .metric-val {
+    font-size: 1.5rem;
+  }
+
+  /* Stack chart on top of controls */
+  .main-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Compact chart height so buttons remain easily reachable */
+  .canvas-wrapper {
+    height: 220px;
+  }
+
+  /* Taller touch targets for thumb taps */
+  button.btn-mode, button.btn-action, button.btn-dose {
+    min-height: 44px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Extra small phones (iPhone SE, narrow screens) */
+@media (max-width: 420px) {
+  .sensor-grid {
+    grid-template-columns: 1fr;
+  }
 }
